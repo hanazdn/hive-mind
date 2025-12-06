@@ -1,16 +1,78 @@
-.refresh-btn {
-  background: linear-gradient(90deg, #ff7e5f, #feb47b);
-  border: none;
-  padding: 8px 14px;
-  border-radius: 8px;
-  color: white;
-  font-weight: bold;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  box-shadow: 0 0 10px #ff7e5f;
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap');
+
+body {
+  margin: 0;
+  padding: 0;
+  background-color: #0d0d0d;
+  color: #00ffea;
+  font-family: 'Orbitron', sans-serif;
 }
 
-.refresh-btn:hover {
-  transform: scale(1.05);
-  box-shadow: 0 0 20px #ff7e5f;
+.app {
+  padding: 40px;
+}
+
+.title {
+  font-size: 3rem;
+  color: #00ffc6; /* main cyan */
+  text-shadow: 
+    0 0 5px #00ffc6, 
+    0 0 10px #00ffc6,
+    0 0 15px #ff6a00; /* subtle orange/red glow */
+  margin-bottom: 20px;
+}
+
+.search-bar input {
+  padding: 10px;
+  width: 300px;
+  border: none;
+  border-radius: 5px;
+  margin-right: 10px;
+  background-color: #111;
+  color: #00ffc6;
+}
+
+.search-bar input::placeholder {
+  color: #00ffea99;
+}
+
+.search-bar button {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  background-color: #00ffc6;
+  color: #0d0d0d;
+  font-weight: bold;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.search-bar button:hover {
+  background-color: #00ffea;
+}
+
+.results ul, .category ul {
+  list-style: none;
+  padding-left: 0;
+}
+
+.results li a, .category li a {
+  color: #00ffea;
+  text-decoration: none;
+  transition: 0.2s;
+}
+
+.results li a:hover, .category li a:hover {
+  color: #00ffc6;
+  text-shadow: 0 0 5px #00ffc6;
+}
+
+.categories {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 40px;
+}
+
+.category {
+  min-width: 200px;
 }
