@@ -22,8 +22,8 @@ function App() {
   const [topics, setTopics] = useState(initialTopicsData);
   const [loading, setLoading] = useState({}); // Track loading per category
 
-  // Fetch new topics from Wikipedia for a category
-  const fetchTopics = async (category) => {
+  // Refresh topics for a category (replace all topics with new ones + keep defaults)
+  const refreshTopics = async (category) => {
     setLoading(prev => ({ ...prev, [category]: true }));
     try {
       const res = await axios.get(`https://en.wikipedia.org/w/api.php`, {
@@ -36,19 +36,19 @@ function App() {
           srlimit: 3
         }
       });
-      const newTopics = res.data.query.search
-        .map(item => item.title)
-        .filter(t => !topics[category].includes(t)); // avoid duplicates
 
+      const newTopics = res.data.query.search.map(item => item.title);
+
+      // Replace old topics but keep initial ones
       setTopics(prev => ({
         ...prev,
-        [category]: [...prev[category], ...newTopics]
+        [category]: [...initialTopicsData[category], ...newTopics]
       }));
     } catch (err) {
       console.error("Error fetching topics:", err);
       setTopics(prev => ({
         ...prev,
-        [category]: [...prev[category], "Failed to load topics"]
+        [category]: [...initialTopicsData[category], "Failed to load topics"]
       }));
     } finally {
       setLoading(prev => ({ ...prev, [category]: false }));
@@ -69,7 +69,7 @@ function App() {
             </ul>
             <button
               className="refresh-btn"
-              onClick={() => fetchTopics(cat)}
+              onClick={() => refreshTopics(cat)}
               disabled={loading[cat]}
             >
               {loading[cat] ? "Refreshing..." : "Refresh Topics"}
