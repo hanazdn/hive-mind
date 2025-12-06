@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import axios from "axios";
 import "./App.css";
 
-// Initial topics for each category
+// Initial topics shown only on first load
 const initialTopicsData = {
   History: ["Caveman Drawings", "Indus Valley Civilization", "How Islam Spread to China"],
   Geography: ["Deep Sea Exploration", "Volcanoes", "Mount Everest"],
@@ -20,9 +20,9 @@ const categories = Object.keys(initialTopicsData);
 
 function App() {
   const [topics, setTopics] = useState(initialTopicsData);
-  const [loading, setLoading] = useState({}); // Track loading per category
+  const [loading, setLoading] = useState({});
 
-  // Refresh topics for a category (replace all topics with new ones + keep defaults)
+  // Refresh topics for a category (completely replace old ones)
   const refreshTopics = async (category) => {
     setLoading(prev => ({ ...prev, [category]: true }));
     try {
@@ -39,16 +39,16 @@ function App() {
 
       const newTopics = res.data.query.search.map(item => item.title);
 
-      // Replace old topics but keep initial ones
+      // Replace all topics with newly fetched ones
       setTopics(prev => ({
         ...prev,
-        [category]: [...initialTopicsData[category], ...newTopics]
+        [category]: newTopics
       }));
     } catch (err) {
       console.error("Error fetching topics:", err);
       setTopics(prev => ({
         ...prev,
-        [category]: [...initialTopicsData[category], "Failed to load topics"]
+        [category]: ["Failed to load topics"]
       }));
     } finally {
       setLoading(prev => ({ ...prev, [category]: false }));
@@ -64,7 +64,11 @@ function App() {
             <h2>{cat}</h2>
             <ul>
               {topics[cat].map((topic, idx) => (
-                <li key={idx}>{topic}</li>
+                <li key={idx}>
+                  <a href={`https://en.wikipedia.org/wiki/${encodeURIComponent(topic)}`} target="_blank" rel="noreferrer">
+                    {topic}
+                  </a>
+                </li>
               ))}
             </ul>
             <button
