@@ -68,6 +68,17 @@ body {
   text-shadow: 0 0 5px #00ffc6;
 }
 
+.topic-link {
+  color: #00ffea; /* neon cyan for links */
+  text-decoration: none;
+  transition: 0.2s;
+}
+
+.topic-link:hover {
+  color: #00ffc6;
+  text-shadow: 0 0 5px #00ffc6;
+}
+
 .categories {
   display: flex;
   flex-wrap: wrap;

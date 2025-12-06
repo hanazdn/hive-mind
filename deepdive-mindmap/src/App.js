@@ -20,11 +20,11 @@ const categories = Object.keys(initialTopicsData);
 
 function App() {
   const [topics, setTopics] = useState(initialTopicsData);
-  const [loading, setLoading] = useState({});
+  const [loading, setLoading] = useState({}); // loading per category
 
-  // Refresh topics for a category (completely replace old ones)
   const refreshTopics = async (category) => {
     setLoading(prev => ({ ...prev, [category]: true }));
+
     try {
       const res = await axios.get(`https://en.wikipedia.org/w/api.php`, {
         params: {
@@ -33,17 +33,18 @@ function App() {
           srsearch: category,
           format: "json",
           origin: "*",
-          srlimit: 3
+          srlimit: 5 // fetch more to make refresh interesting
         }
       });
 
       const newTopics = res.data.query.search.map(item => item.title);
 
-      // Replace all topics with newly fetched ones
+      // Replace previous topics entirely with new topics
       setTopics(prev => ({
         ...prev,
-        [category]: newTopics
+        [category]: newTopics.length ? newTopics : ["No topics found"]
       }));
+
     } catch (err) {
       console.error("Error fetching topics:", err);
       setTopics(prev => ({
@@ -51,6 +52,7 @@ function App() {
         [category]: ["Failed to load topics"]
       }));
     } finally {
+      // Re-enable the button immediately so you can refresh again
       setLoading(prev => ({ ...prev, [category]: false }));
     }
   };
@@ -65,7 +67,12 @@ function App() {
             <ul>
               {topics[cat].map((topic, idx) => (
                 <li key={idx}>
-                  <a href={`https://en.wikipedia.org/wiki/${encodeURIComponent(topic)}`} target="_blank" rel="noreferrer">
+                  <a
+                    href={`https://en.wikipedia.org/wiki/${encodeURIComponent(topic)}`}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="topic-link"
+                  >
                     {topic}
                   </a>
                 </li>
