@@ -83,7 +83,7 @@ function App() {
 
   return (
     <div className="app">
-      <h1 className="title">Deep Dive Mindmap</h1>
+      <h1 className="title">Deep Dive</h1>
 
       {/* Search Bar */}
       <div className="search-bar">
