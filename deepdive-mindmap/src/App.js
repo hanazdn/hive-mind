@@ -20,27 +20,29 @@ const categories = Object.keys(initialTopicsData);
 
 function App() {
   const [topics, setTopics] = useState(initialTopicsData);
+  const [loading, setLoading] = useState({}); // Track loading per category
 
   // Fetch new topics from Wikipedia for a category
   const fetchTopics = async (category) => {
+    setLoading(prev => ({ ...prev, [category]: true }));
     try {
-      const res = await axios.get(
-        `https://en.wikipedia.org/w/api.php`,
-        {
-          params: {
-            action: "query",
-            list: "search",
-            srsearch: category,
-            format: "json",
-            origin: "*",
-            srlimit: 3
-          }
+      const res = await axios.get(`https://en.wikipedia.org/w/api.php`, {
+        params: {
+          action: "query",
+          list: "search",
+          srsearch: category,
+          format: "json",
+          origin: "*",
+          srlimit: 3
         }
-      );
-      const newTopics = res.data.query.search.map(item => item.title);
+      });
+      const newTopics = res.data.query.search
+        .map(item => item.title)
+        .filter(t => !topics[category].includes(t)); // avoid duplicates
+
       setTopics(prev => ({
         ...prev,
-        [category]: [...prev[category], ...newTopics.filter(t => !prev[category].includes(t))]
+        [category]: [...prev[category], ...newTopics]
       }));
     } catch (err) {
       console.error("Error fetching topics:", err);
@@ -48,6 +50,8 @@ function App() {
         ...prev,
         [category]: [...prev[category], "Failed to load topics"]
       }));
+    } finally {
+      setLoading(prev => ({ ...prev, [category]: false }));
     }
   };
 
@@ -63,8 +67,12 @@ function App() {
                 <li key={idx}>{topic}</li>
               ))}
             </ul>
-            <button className="refresh-btn" onClick={() => fetchTopics(cat)}>
-              Refresh Topics
+            <button
+              className="refresh-btn"
+              onClick={() => fetchTopics(cat)}
+              disabled={loading[cat]}
+            >
+              {loading[cat] ? "Refreshing..." : "Refresh Topics"}
             </button>
           </div>
         ))}
