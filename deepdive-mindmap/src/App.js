@@ -33,15 +33,21 @@ function App() {
             srsearch: category,
             format: "json",
             origin: "*",
-            srlimit: 5
+            srlimit: 3
           }
         }
       );
       const newTopics = res.data.query.search.map(item => item.title);
-      setTopics(prev => ({ ...prev, [category]: newTopics }));
+      setTopics(prev => ({
+        ...prev,
+        [category]: [...prev[category], ...newTopics.filter(t => !prev[category].includes(t))]
+      }));
     } catch (err) {
       console.error("Error fetching topics:", err);
-      setTopics(prev => ({ ...prev, [category]: ["Failed to load topics"] }));
+      setTopics(prev => ({
+        ...prev,
+        [category]: [...prev[category], "Failed to load topics"]
+      }));
     }
   };
 
@@ -57,7 +63,9 @@ function App() {
                 <li key={idx}>{topic}</li>
               ))}
             </ul>
-            <button onClick={() => fetchTopics(cat)}>Refresh Topics</button>
+            <button className="refresh-btn" onClick={() => fetchTopics(cat)}>
+              Refresh Topics
+            </button>
           </div>
         ))}
       </div>
