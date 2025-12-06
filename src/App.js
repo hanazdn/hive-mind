@@ -1,11 +1,11 @@
 import { useState } from "react";
 import axios from "axios";
-import "./App.css"; // we’ll add custom CSS here
 
 function App() {
   const [query, setQuery] = useState("");
   const [results, setResults] = useState([]);
 
+  // Search function using Wikipedia API
   const handleSearch = async () => {
     if (!query) return;
     try {
@@ -22,12 +22,13 @@ function App() {
           },
         }
       );
-      setResults(res.data[1]);
+      setResults(res.data[1]); // get top 5 titles
     } catch (err) {
       console.error(err);
     }
   };
 
+  // Suggested topics with 10 categories
   const suggestedTopics = {
     History: [
       { name: "Cave paintings", link: "https://en.wikipedia.org/wiki/Cave_painting" },
@@ -82,23 +83,26 @@ function App() {
   };
 
   return (
-    <div className="app">
-      <h1 className="title">Deep Dive Mindmap</h1>
+    <div style={{ padding: 40, fontFamily: "Arial, sans-serif" }}>
+      <h1>Deep Dive</h1>
 
       {/* Search Bar */}
-      <div className="search-bar">
+      <div style={{ marginBottom: 20 }}>
         <input
           type="text"
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           placeholder="Type a topic..."
+          style={{ padding: 8, width: 300, marginRight: 8 }}
         />
-        <button onClick={handleSearch}>Search</button>
+        <button onClick={handleSearch} style={{ padding: 8 }}>
+          Search
+        </button>
       </div>
 
       {/* Search Results */}
       {results.length > 0 && (
-        <div className="results">
+        <div>
           <h3>Search Results:</h3>
           <ul>
             {results.map((topic) => (
@@ -117,16 +121,20 @@ function App() {
       )}
 
       {/* Suggested Topics */}
-      <div className="suggested">
+      <div style={{ marginTop: 40 }}>
         <h3>Suggested Topics:</h3>
-        <div className="categories">
+        <div style={{ display: "flex", flexWrap: "wrap", gap: 40 }}>
           {Object.entries(suggestedTopics).map(([category, topics]) => (
-            <div key={category} className="category">
+            <div key={category} style={{ minWidth: 200 }}>
               <h4>{category}</h4>
               <ul>
                 {topics.map((topic) => (
                   <li key={topic.name}>
-                    <a href={topic.link} target="_blank" rel="noopener noreferrer">
+                    <a
+                      href={topic.link}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
                       {topic.name}
                     </a>
                   </li>
