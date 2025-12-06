@@ -59,7 +59,7 @@ function App() {
 
   return (
     <div className="App">
-      <h1 className="title">Mind Map Explorer</h1>
+      <h1 className="title">Deep Dive</h1>
       <div className="categories">
         {categories.map(cat => (
           <div key={cat} className="category-card">
